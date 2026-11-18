@@ -46,7 +46,7 @@ export default function Hero() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden bg-secondary pb-40 pt-20 text-white md:pb-44 md:pt-28"
+      className="relative overflow-hidden bg-secondary pb-40 pt-20 text-white md:pb-44 md:pt-18"
     >
       {/* Background photo + overlay */}
       <m.div

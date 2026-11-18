@@ -25,7 +25,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${sora.variable} ${inter.variable}`}>
         <MotionProvider>{children}</MotionProvider>
-        {children}
         <Toaster richColors position="top-right" />
       </body>
     </html>
