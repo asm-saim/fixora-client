@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Home() {
@@ -63,7 +64,11 @@ export default function Home() {
             Documentation
           </a>
         </div>
+        <Button>Default Button</Button>
+      <Button variant="outline">Outline Button</Button>
       </main>
+
     </div>
+    
   );
 }
