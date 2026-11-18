@@ -101,4 +101,7 @@
   .section-subtitle { @apply mt-3 text-base md:text-lg text-muted-foreground max-w-2xl; }
   .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
   .section-space { @apply py-16 md:py-24; }
+  .eyebrow {
+  @apply inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-primary;
+}
 }
