@@ -25,7 +25,9 @@ async function getToken(): Promise<string | null> {
     cached = null;
     return null;
   }
-  const payload = JSON.parse(atob(data.token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+  const payload = JSON.parse(
+    atob(data.token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
+  );
   cached = { token: data.token, expiresAt: payload.exp * 1000 };
   return data.token;
 }
@@ -33,7 +35,12 @@ async function getToken(): Promise<string | null> {
 type Options = Omit<RequestInit, "body"> & { auth?: boolean; body?: unknown };
 
 /** Public call: api("/api/services"). Private call: api("/api/bookings/my", { auth: true }). */
-export async function api<T>(path: string, { auth = false, body, headers, ...rest }: Options = {}): Promise<T> {
+export async function api<T>(
+  path: string,
+  options: Options = {},
+  retried = false,
+): Promise<T> {
+  const { auth = false, body, headers, ...rest } = options;
   const h = new Headers(headers);
   if (body !== undefined) h.set("Content-Type", "application/json");
 
@@ -49,7 +56,14 @@ export async function api<T>(path: string, { auth = false, body, headers, ...res
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
+  // Expired or rotated token: drop the cache, get a fresh token, retry once
+  if (res.status === 401 && auth && !retried) {
+    clearTokenCache();
+    return api<T>(path, options, true);
+  }
+
   const data = await res.json().catch(() => null);
-  if (!res.ok) throw new ApiError(data?.message || "Request failed", res.status);
+  if (!res.ok)
+    throw new ApiError(data?.message || "Request failed", res.status);
   return data as T;
 }
