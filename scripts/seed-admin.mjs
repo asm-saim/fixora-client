@@ -1,12 +1,18 @@
 import { MongoClient } from "mongodb";
 
 const {
-  BETTER_AUTH_URL, MONGODB_URI, DB_NAME = "fixora",
-  ADMIN_NAME = "Fixora Admin", ADMIN_EMAIL, ADMIN_PASSWORD,
+  BETTER_AUTH_URL,
+  MONGODB_URI,
+  DB_NAME = "fixora",
+  ADMIN_NAME = "Fixora Admin",
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
 } = process.env;
 
 if (!BETTER_AUTH_URL || !MONGODB_URI || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
-  console.error("Set BETTER_AUTH_URL, MONGODB_URI, ADMIN_EMAIL and ADMIN_PASSWORD in .env.local");
+  console.error(
+    "Set BETTER_AUTH_URL, MONGODB_URI, ADMIN_EMAIL and ADMIN_PASSWORD in .env.local",
+  );
   process.exit(1);
 }
 
@@ -14,7 +20,11 @@ if (!BETTER_AUTH_URL || !MONGODB_URI || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
 const res = await fetch(`${BETTER_AUTH_URL}/api/auth/sign-up/email`, {
   method: "POST",
   headers: { "Content-Type": "application/json", Origin: BETTER_AUTH_URL },
-  body: JSON.stringify({ name: ADMIN_NAME, email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
+  body: JSON.stringify({
+    name: ADMIN_NAME,
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+  }),
 });
 const body = await res.json().catch(() => ({}));
 if (!res.ok && body?.code !== "USER_ALREADY_EXISTS") {
@@ -28,7 +38,14 @@ await client.connect();
 const result = await client
   .db(DB_NAME)
   .collection("users")
-  .updateOne({ email: ADMIN_EMAIL.toLowerCase() }, { $set: { role: "admin" } });
+  .updateOne(
+    { email: ADMIN_EMAIL.toLowerCase() },
+    { $set: { role: "admin", emailVerified: true } },
+  );
 await client.close();
 
-console.log(result.matchedCount ? `Admin ready: ${ADMIN_EMAIL}` : "User not found, check DB_NAME matches");
+console.log(
+  result.matchedCount
+    ? `Admin ready: ${ADMIN_EMAIL}`
+    : "User not found, check DB_NAME matches",
+);
