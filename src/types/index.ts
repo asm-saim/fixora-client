@@ -1,3 +1,4 @@
+
 import type { Role } from "@/lib/constants";
 
 export type AppUser = {
@@ -22,13 +23,36 @@ export type Service = {
   serviceMode: "Home Visit" | "Shop Drop-off";
   serviceArea: string;
   technicianName: string;
-  technicianEmail: string;
+  technicianEmail?: string;
   approvalStatus: "pending" | "approved" | "rejected";
   isAvailable: boolean;
   createdAt: string;
 };
 
-export type BookingStatus = "requested" | "accepted" | "rejected" | "in-progress" | "completed" | "cancelled";
+export type ServiceDetail = Service & {
+  technician: {
+    name: string;
+    image: string | null;
+    area: string;
+    bio: string;
+  };
+};
+
+export type ServicesResponse = {
+  services: Service[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+export type BookingStatus =
+  | "requested"
+  | "accepted"
+  | "rejected"
+  | "in-progress"
+  | "completed"
+  | "cancelled";
 
 export type Booking = {
   _id: string;

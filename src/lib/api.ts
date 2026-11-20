@@ -35,14 +35,13 @@ async function getToken(): Promise<string | null> {
 type Options = Omit<RequestInit, "body"> & { auth?: boolean; body?: unknown };
 
 /** Public call: api("/api/services"). Private call: api("/api/bookings/my", { auth: true }). */
-export async function api<T>(
-  path: string,
-  options: Options = {},
-  retried = false,
-): Promise<T> {
+export async function api<T>(path: string, options: Options = {}, retried = false): Promise<T> {
   const { auth = false, body, headers, ...rest } = options;
+  const isForm = typeof FormData !== "undefined" && body instanceof FormData;
+
   const h = new Headers(headers);
-  if (body !== undefined) h.set("Content-Type", "application/json");
+  if (body !== undefined && !isForm) h.set("Content-Type", "application/json");
+  // For FormData the browser sets the multipart boundary itself, so no Content-Type here
 
   if (auth) {
     const token = await getToken();
@@ -53,17 +52,15 @@ export async function api<T>(
   const res = await fetch(`${API_URL}${path}`, {
     ...rest,
     headers: h,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body),
   });
 
-  // Expired or rotated token: drop the cache, get a fresh token, retry once
   if (res.status === 401 && auth && !retried) {
     clearTokenCache();
     return api<T>(path, options, true);
   }
 
   const data = await res.json().catch(() => null);
-  if (!res.ok)
-    throw new ApiError(data?.message || "Request failed", res.status);
+  if (!res.ok) throw new ApiError(data?.message || "Request failed", res.status);
   return data as T;
 }

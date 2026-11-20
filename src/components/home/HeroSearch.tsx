@@ -32,7 +32,7 @@ export default function HeroSearch() {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-white/25 bg-white/10 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/10 backdrop-blur-xl sm:p-8"
+      className="rounded-2xl border border-white/25 bg-white/10 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/10 backdrop-blur-sm sm:p-8"
     >
       <h2 className="font-heading text-xl font-bold text-white">Find a Repair</h2>
       <p className="mt-1 text-sm text-white/70">

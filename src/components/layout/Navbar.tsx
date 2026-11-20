@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LayoutDashboard, LogOut, Menu, UserCog } from "lucide-react";
 import { m } from "framer-motion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLinkItem, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -14,11 +13,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Skeleton } from "@/components/ui/skeleton";
 import Logo from "@/components/shared/Logo";
 import RoleBadge from "@/components/shared/RoleBadge";
+import UserAvatar from "@/components/shared/UserAvatar";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useSignOut } from "@/hooks/use-sign-out";
 import { dashboardPath } from "@/lib/roles";
 import { EASE } from "@/lib/motion";
-import { cn, initials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/", label: "Home" },
@@ -34,12 +34,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const isHome = pathname === "/";
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
@@ -48,12 +49,15 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE }}
       className={cn(
-        "sticky top-0 z-50 border-b bg-background/85 backdrop-blur transition-shadow duration-300",
-        scrolled ? "shadow-md" : "shadow-none"
+        "top-0 z-50 border-b transition-all duration-300",
+        isHome ? "fixed inset-x-0" : "sticky",
+        isHome && !scrolled
+          ? "border-transparent bg-transparent text-white shadow-none"
+          : "border-white/10 bg-[#0B1F3A]/80 text-white shadow-lg backdrop-blur-xl"
       )}
     >
       <div className="container-page flex h-16 items-center justify-between">
-        <Logo />
+        <Logo light />
 
         {/* Desktop links */}
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
@@ -63,11 +67,10 @@ export default function Navbar() {
               href={l.href}
               aria-current={isActive(l.href) ? "page" : undefined}
               className={cn(
-                "relative rounded-md px-4 py-2 text-sm font-medium transition-colors",
-                "after:absolute after:inset-x-4 after:-bottom-0.5 after:h-0.5 after:origin-left after:rounded after:bg-primary after:transition-transform after:duration-300",
+                "rounded-md px-4 py-2 text-sm font-medium transition-colors",
                 isActive(l.href)
-                  ? "text-foreground after:scale-x-100"
-                  : "text-muted-foreground after:scale-x-0 hover:text-foreground hover:after:scale-x-100"
+                  ? "font-semibold text-primary"
+                  : "text-white/75 hover:text-primary/80"
               )}
             >
               {l.label}
@@ -85,10 +88,12 @@ export default function Navbar() {
                 className="rounded-full ring-offset-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 aria-label="Open user menu"
               >
-                <Avatar className="h-9 w-9 border">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
-                  <AvatarFallback className="bg-secondary text-xs font-semibold text-white">{initials(user.name)}</AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  src={user.image}
+                  name={user.name}
+                  className="h-9 w-9 border"
+                  fallbackClassName="bg-secondary text-xs font-semibold text-white"
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
                 <div className="space-y-1.5 px-2 py-2.5">
@@ -111,7 +116,15 @@ export default function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="hidden items-center gap-2 sm:flex">
-              <Link href="/sign-in" className={buttonVariants({ variant: "outline" })}>Sign In</Link>
+              <Link
+                href="/sign-in"
+                className={buttonVariants({
+                  variant: "outline",
+                  className: "bg-transparent text-white hover:border-primary hover:bg-transparent hover:text-primary",
+                })}
+              >
+                Sign In
+              </Link>
               <Link href="/sign-up" className={buttonVariants()}>Sign Up</Link>
             </div>
           )}
@@ -119,7 +132,11 @@ export default function Navbar() {
           {/* Mobile menu */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className={buttonVariants({ variant: "ghost", size: "icon", className: "md:hidden" })}
+              className={buttonVariants({
+                variant: "ghost",
+                size: "icon",
+                className: "md:hidden text-inherit hover:bg-white/10 hover:text-primary",
+              })}
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
@@ -134,7 +151,7 @@ export default function Navbar() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       "rounded-lg px-4 py-3 text-sm font-medium",
-                      isActive(l.href) ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-muted"
+                      isActive(l.href) ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {l.label}
@@ -145,7 +162,10 @@ export default function Navbar() {
                     <Link
                       href="/sign-in"
                       onClick={() => setOpen(false)}
-                      className={buttonVariants({ variant: "outline" })}
+                      className={buttonVariants({
+                        variant: "outline",
+                        className: "bg-transparent hover:border-primary hover:bg-transparent hover:text-primary",
+                      })}
                     >
                       Sign In
                     </Link>

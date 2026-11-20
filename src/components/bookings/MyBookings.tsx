@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import EmptyState from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeletons";
+import PayNowButton from "@/components/bookings/PayNowButton";
 import { PaymentBadge, StatusBadge } from "@/components/shared/StatusBadge";
 import { api } from "@/lib/api";
 import { formatDate, formatMoney } from "@/lib/format";
@@ -76,9 +77,9 @@ export default function MyBookings() {
         </Button>
       );
     }
-    if (b.status === "completed" && b.paymentStatus === "unpaid") {
-      // STEP 9: replace this line with the Pay Now button
-      return <span className="text-sm font-medium text-amber-700">Payment due</span>;
+    if (b.status === "completed") {
+      // Pay Now only while unpaid. A paid job shows the Paid badge instead of the button.
+      return b.paymentStatus === "unpaid" ? <PayNowButton booking={b} /> : <PaymentBadge status="paid" />;
     }
     return <span className="text-sm text-muted-foreground">-</span>;
   };

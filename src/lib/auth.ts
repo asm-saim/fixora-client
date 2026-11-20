@@ -26,6 +26,22 @@ export const auth = betterAuth({
     minPasswordLength: 6, // BetterAuth default is 8, the brief says 6
     autoSignIn: true,
   },
+    socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+
+  account: {
+    // If someone signed up with email first and later uses Google with the same
+    // address, link both logins to one account instead of creating a duplicate.
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+      updateUserInfoOnLink: true,
+    },
+  },
 
   user: {
     modelName: "users", // BetterAuth's user collection IS our users collection

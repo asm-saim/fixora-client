@@ -46,7 +46,7 @@ export default function Hero() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden bg-secondary pb-40 pt-20 text-white md:pb-44 md:pt-18"
+      className="relative overflow-hidden bg-secondary pb-40 pt-20 text-white md:pb-47 md:pt-28"
     >
       {/* Background photo + overlay */}
       <m.div
@@ -116,6 +116,7 @@ export default function Hero() {
             <Pressable>
               <Button
                 render={<Link href="/services" />}
+                nativeButton={false}
                 className="group h-11 px-6"
               >
                 Browse Services
@@ -125,6 +126,7 @@ export default function Hero() {
             <Pressable>
               <Button
                 render={<Link href="/about" />}
+                nativeButton={false}
                 variant="outline"
                 className="h-11 border-white/30 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white"
               >

@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { Home, Menu, PanelLeft } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import RoleBadge from "@/components/shared/RoleBadge";
+import UserAvatar from "@/components/shared/UserAvatar";
 import type { AppUser } from "@/types";
-import { initials } from "@/lib/utils";
 
 type Props = { user: AppUser | null; onOpenMobile: () => void; onToggleCollapse: () => void };
 
@@ -31,10 +30,12 @@ export default function Topbar({ user, onOpenMobile, onToggleCollapse }: Props) 
             <p className="text-sm font-semibold leading-tight">{user.name}</p>
             <RoleBadge role={user.role} className="mt-0.5 h-5 px-2 text-[11px]" />
           </div>
-          <Avatar className="h-9 w-9 border">
-            <AvatarImage src={user.image ?? undefined} alt={user.name} />
-            <AvatarFallback className="bg-secondary text-xs font-semibold text-white">{initials(user.name)}</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            src={user.image}
+            name={user.name}
+            className="h-9 w-9 border"
+            fallbackClassName="bg-secondary text-xs font-semibold text-white"
+          />
         </div>
       )}
     </header>

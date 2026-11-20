@@ -9,6 +9,17 @@ export function formatDate(iso: string) {
   );
 }
 
+/** A moment in time (for example when a payment was made), shown in the viewer's own timezone. */
+export function formatDateTime(iso: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(iso));
+}
+
 /** Today's date in the browser's own timezone as YYYY-MM-DD (for <input type="date" min>). */
 export function todayLocalISO() {
   const d = new Date();

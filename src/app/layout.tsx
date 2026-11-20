@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   },
   description:
     "Book verified technicians, track every repair step, and pay only after the job is done.",
+  icons: {
+    icon: "/images/logo.png",
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({

@@ -1,14 +1,27 @@
+import Link from "next/link";
 import Hero from "@/components/home/Hero";
 import QuickCategories from "@/components/home/QuickCategories";
+import HowItWorks from "@/components/home/HowItWorks";
+import PopularCategories from "@/components/home/PopularCategories";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
+import Testimonials from "@/components/home/Testimonials";
+import CtaBanner from "@/components/home/CtaBanner";
 import EmptyState from "@/components/shared/EmptyState";
+import SectionHeading from "@/components/shared/SectionHeading";
 import ServiceCard from "@/components/shared/ServiceCard";
-import { Reveal } from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import { Button } from "@/components/ui/button";
+import { EMPTY_FILTERS, getServices } from "@/lib/services";
 import type { Service } from "@/types";
 
-// TEMP: replaced in Step 7 with a real fetch from the Express API
+// 6 latest approved + available services
 async function getFeaturedServices(): Promise<Service[]> {
-  return [];
+  try {
+    const data = await getServices(EMPTY_FILTERS, 6);
+    return data.services;
+  } catch {
+    return [];
+  }
 }
 
 export default async function Home() {
@@ -20,11 +33,14 @@ export default async function Home() {
       <QuickCategories />
 
       <section className="container-page section-space">
-        <Reveal>
-          <span className="eyebrow">Featured</span>
-          <h2 className="section-title mt-3">Latest repair services</h2>
-          <p className="section-subtitle">Approved by our team and ready to book.</p>
-        </Reveal>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <SectionHeading
+            eyebrow="Featured"
+            title="Latest repair services"
+            subtitle="Approved by our team and ready to book."
+          />
+          <Button render={<Link href="/services" />} nativeButton={false} variant="outline">View all services</Button>
+        </div>
 
         <div className="mt-10">
           {services.length === 0 ? (
@@ -44,6 +60,12 @@ export default async function Home() {
           )}
         </div>
       </section>
+
+      <HowItWorks />
+      <PopularCategories />
+      <WhyChooseUs />
+      <Testimonials />
+      <CtaBanner />
     </>
   );
 }
