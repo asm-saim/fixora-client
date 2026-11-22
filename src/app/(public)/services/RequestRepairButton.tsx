@@ -11,7 +11,7 @@ import { Pressable } from "@/components/motion/Pressable";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { ROLE_LABEL } from "@/lib/roles";
-import RequestRepairForm, { RequestRepairService } from "./RequestRepairForm";
+import RequestRepairForm, { RequestRepairService } from "@/components/services/RequestRepairForm";
 
 export default function RequestRepairButton({ service }: { service: RequestRepairService }) {
   const { user, isPending } = useCurrentUser();
