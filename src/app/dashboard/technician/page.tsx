@@ -1,15 +1,18 @@
-import StatsCard from "@/components/shared/StatsCard";
-import { ClipboardList, CheckCircle2, Hammer } from "lucide-react";
+import type { Metadata } from "next";
+import TechnicianOverview from "@/components/dashboard/TechnicianOverview";
+import { requireRole } from "@/lib/session";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Technician Dashboard" };
+
+export default async function TechnicianDashboardPage() {
+  const user = await requireRole("technician");
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Overview</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatsCard title="Total Requests" value={12} icon={ClipboardList} tone="blue" />
-        <StatsCard title="Active Jobs" value={3} icon={Hammer} tone="amber" />
-        <StatsCard title="Completed Jobs" value={9} icon={CheckCircle2} tone="green" />
+      <div>
+        <h1 className="text-2xl font-bold">Welcome back, {user.name.split(" ")[0]}</h1>
+        <p className="mt-1 text-muted-foreground">Your services, requests and earnings at a glance.</p>
       </div>
+      <TechnicianOverview />
     </div>
   );
 }
