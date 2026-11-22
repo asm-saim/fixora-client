@@ -7,7 +7,13 @@ import { MongoClient } from "mongodb";
 
 // Reuse one client across hot reloads and serverless invocations
 const globalForMongo = global as unknown as { _authMongo?: MongoClient };
-const client = (globalForMongo._authMongo ??= new MongoClient(process.env.MONGODB_URI!));
+// Fail fast (default is 30s) so a connectivity problem shows up as a quick, clear error
+// instead of a hanging request, and keep the pool small for serverless.
+const client = (globalForMongo._authMongo ??= new MongoClient(process.env.MONGODB_URI!, {
+  serverSelectionTimeoutMS: 8000,
+  connectTimeoutMS: 8000,
+  maxPoolSize: 5,
+}));
 const db = client.db(process.env.DB_NAME || "fixora");
 
 const trustedOrigins = (process.env.TRUSTED_ORIGINS || process.env.BETTER_AUTH_URL || "")
