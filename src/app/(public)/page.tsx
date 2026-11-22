@@ -50,9 +50,9 @@ export default async function Home() {
               action={{ label: "Browse Services", href: "/services" }}
             />
           ) : (
-            <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" gap={0.08} immediate>
-              {services.map((s) => (
-                <StaggerItem key={s._id} className="h-full">
+            <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" perCard>
+              {services.map((s, i) => (
+                <StaggerItem key={s._id} index={i} className="h-full">
                   <ServiceCard service={s} />
                 </StaggerItem>
               ))}
