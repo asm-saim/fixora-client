@@ -111,7 +111,7 @@ export default function UsersTable({ currentUserId }: { currentUserId: string })
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email" className="h-11 pl-9" aria-label="Search users" />
         </div>
-        <Select value={role} onValueChange={(value) => { setRole(value); setPage(1); }}>
+        <Select value={role} onValueChange={(value) => { setRole(value ?? "all"); setPage(1); }}>
           <SelectTrigger className="h-11 w-full" aria-label="Filter by role"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All roles</SelectItem>

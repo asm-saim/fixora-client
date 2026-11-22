@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatDateTime, formatMoney } from "@/lib/format";
 import type { Payment } from "@/types";
@@ -51,7 +51,7 @@ export default function PaymentResult({ sessionId }: { sessionId: string | null 
   if (state.phase === "error") {
     return (
       <div className="mx-auto max-w-lg rounded-2xl border bg-card p-8 text-center shadow-sm sm:p-10">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-300">
           <AlertTriangle className="h-8 w-8" />
         </span>
         <h1 className="mt-5 text-2xl font-bold">We could not confirm your payment</h1>
@@ -61,7 +61,7 @@ export default function PaymentResult({ sessionId }: { sessionId: string | null 
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {sessionId && <Button onClick={verify} className="h-11 px-6">Confirm again</Button>}
-          <Button asChild variant="outline" className="h-11 px-6"><Link href="/dashboard/customer/bookings">My Bookings</Link></Button>
+          <Link href="/dashboard/customer/bookings" className={buttonVariants({ variant: "outline", className: "h-11 px-6" })}>My Bookings</Link>
         </div>
       </div>
     );
@@ -70,7 +70,7 @@ export default function PaymentResult({ sessionId }: { sessionId: string | null 
   const { payment } = state;
   return (
     <div className="mx-auto max-w-lg rounded-2xl border bg-card p-8 text-center shadow-sm sm:p-10">
-      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
+      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300">
         <CheckCircle2 className="h-8 w-8" />
       </span>
       <h1 className="mt-5 text-2xl font-bold">Payment successful</h1>
@@ -96,8 +96,8 @@ export default function PaymentResult({ sessionId }: { sessionId: string | null 
       </dl>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Button asChild className="h-11 px-6"><Link href="/dashboard/customer/bookings">Back to My Bookings</Link></Button>
-        <Button asChild variant="outline" className="h-11 px-6"><Link href="/dashboard/customer/payments">Payment History</Link></Button>
+        <Link href="/dashboard/customer/bookings" className={buttonVariants({ className: "h-11 px-6" })}>Back to My Bookings</Link>
+        <Link href="/dashboard/customer/payments" className={buttonVariants({ variant: "outline", className: "h-11 px-6" })}>Payment History</Link>
       </div>
     </div>
   );

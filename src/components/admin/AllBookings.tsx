@@ -36,7 +36,7 @@ export default function AllBookings() {
   return (
     <div className="space-y-5">
       <div className="sm:max-w-xs">
-        <Select value={status} onValueChange={(value) => { setStatus(value); setPage(1); }}>
+        <Select value={status} onValueChange={(value) => { setStatus(value ?? "all"); setPage(1); }}>
           <SelectTrigger className="h-11 w-full" aria-label="Filter by status"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All statuses</SelectItem>

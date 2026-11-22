@@ -60,7 +60,7 @@ export default function ServiceFilters({ initial }: { initial: ServiceFilterValu
         {pending && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
       </div>
 
-      <Select value={initial.category || "all"} onValueChange={(v) => push({ category: v === "all" ? "" : v })}>
+      <Select value={initial.category || "all"} onValueChange={(v) => push({ category: !v || v === "all" ? "" : v })}>
         <SelectTrigger className="h-11 w-full" aria-label="Category"><SelectValue /></SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All categories</SelectItem>
@@ -68,7 +68,7 @@ export default function ServiceFilters({ initial }: { initial: ServiceFilterValu
         </SelectContent>
       </Select>
 
-      <Select value={initial.serviceMode || "all"} onValueChange={(v) => push({ serviceMode: v === "all" ? "" : v })}>
+      <Select value={initial.serviceMode || "all"} onValueChange={(v) => push({ serviceMode: !v || v === "all" ? "" : v })}>
         <SelectTrigger className="h-11 w-full" aria-label="Service mode"><SelectValue /></SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All modes</SelectItem>
@@ -76,7 +76,7 @@ export default function ServiceFilters({ initial }: { initial: ServiceFilterValu
         </SelectContent>
       </Select>
 
-      <Select value={initial.sort} onValueChange={(v) => push({ sort: v })}>
+      <Select value={initial.sort} onValueChange={(v) => push({ sort: v ?? undefined })}>
         <SelectTrigger className="h-11 w-full" aria-label="Sort"><SelectValue /></SelectTrigger>
         <SelectContent>
           {SORT_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
