@@ -36,7 +36,7 @@ export default async function ServiceResults({ filters }: { filters: ServiceFilt
         <span className="font-semibold text-foreground">{data.total}</span> services
       </p>
 
-      <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" gap={0.03}>
+      <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" gap={0.03} immediate>
         {data.services.map((s) => (
           <StaggerItem key={s._id} className="h-full">
             <ServiceCard service={s} />
