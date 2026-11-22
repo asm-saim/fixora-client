@@ -3,18 +3,51 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { jwt } from "better-auth/plugins";
-import { MongoClient } from "mongodb";
+import { MongoClient, type Db } from "mongodb";
+
+const DB_NAME = process.env.DB_NAME || "fixora";
+
+type MongoState = { client: MongoClient; db: Db; closed: boolean };
 
 // Reuse one client across hot reloads and serverless invocations
-const globalForMongo = global as unknown as { _authMongo?: MongoClient };
-// Fail fast (default is 30s) so a connectivity problem shows up as a quick, clear error
-// instead of a hanging request, and keep the pool small for serverless.
-const client = (globalForMongo._authMongo ??= new MongoClient(process.env.MONGODB_URI!, {
-  serverSelectionTimeoutMS: 8000,
-  connectTimeoutMS: 8000,
-  maxPoolSize: 5,
-}));
-const db = client.db(process.env.DB_NAME || "fixora");
+const globalForMongo = global as unknown as { _authMongo?: MongoState };
+
+function createMongoState(): MongoState {
+  // Fail fast (default is 30s) so a connectivity problem shows up as a quick, clear error
+  // instead of a hanging request, and keep the pool small for serverless.
+  const client = new MongoClient(process.env.MONGODB_URI!, {
+    serverSelectionTimeoutMS: 8000,
+    connectTimeoutMS: 8000,
+    maxPoolSize: 5,
+  });
+  const state: MongoState = { client, db: client.db(DB_NAME), closed: false };
+
+  // The driver closes a client's topology for good when its *first* connect attempt
+  // fails, and every later operation on that client throws MongoTopologyClosedError.
+  // Cached in `global`, such a client would stay broken until the instance is
+  // recycled, so remember it and build a fresh client instead of reusing it.
+  client.on("topologyClosed", () => {
+    state.closed = true;
+  });
+
+  return state;
+}
+
+function getDb(): Db {
+  const cached = globalForMongo._authMongo;
+  if (cached && !cached.closed) return cached.db;
+  return (globalForMongo._authMongo = createMongoState()).db;
+}
+
+// Better Auth captures the Db once at startup, so give it a facade that always
+// resolves to the current healthy client.
+const db = new Proxy({} as Db, {
+  get(_target, prop) {
+    const current = getDb();
+    const value = Reflect.get(current, prop, current);
+    return typeof value === "function" ? value.bind(current) : value;
+  },
+});
 
 const trustedOrigins = (process.env.TRUSTED_ORIGINS || process.env.BETTER_AUTH_URL || "")
   .split(",")
