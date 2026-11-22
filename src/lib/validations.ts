@@ -78,3 +78,24 @@ export const serviceSchema = z.object({
 });
 
 export type ServiceValues = z.infer<typeof serviceSchema>;
+
+// Profile form validation (email and role are read-only, so they are not part of the form)
+export const profileSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(60, "Name is too long"),
+  phone: z
+    .string()
+    .trim()
+    .refine((v) => v === "" || /^\+?[0-9][0-9\s-]{6,18}$/.test(v), "Enter a valid phone number"),
+  area: z.string().trim().max(100, "Area must be 100 characters or fewer"),
+  bio: z.string().trim().max(300, "Bio must be 300 characters or fewer"),
+});
+
+export type ProfileValues = z.infer<typeof profileSchema>;
+
+// Review form validation
+export const reviewSchema = z.object({
+  rating: z.number().int().min(1, "Choose a rating from 1 to 5 stars").max(5),
+  comment: z.string().trim().max(500, "The review must be 500 characters or fewer"),
+});
+
+export type ReviewValues = z.infer<typeof reviewSchema>;

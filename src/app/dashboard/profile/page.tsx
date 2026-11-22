@@ -1,15 +1,21 @@
-import StatsCard from "@/components/shared/StatsCard";
-import { ClipboardList, CheckCircle2, Hammer } from "lucide-react";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import ProfileForm from "@/components/profile/ProfileForm";
+import { getCurrentUser } from "@/lib/session";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Update Profile" };
+
+export default async function ProfilePage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Overview</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatsCard title="Total Requests" value={12} icon={ClipboardList} tone="blue" />
-        <StatsCard title="Active Jobs" value={3} icon={Hammer} tone="amber" />
-        <StatsCard title="Completed Jobs" value={9} icon={CheckCircle2} tone="green" />
+    <div className="mx-auto max-w-3xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Update Profile</h1>
+        <p className="mt-1 text-muted-foreground">Change your name, photo and contact details. Changes show everywhere straight away.</p>
       </div>
+      <ProfileForm user={user} />
     </div>
   );
 }
