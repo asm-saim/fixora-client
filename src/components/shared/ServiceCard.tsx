@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Home, MapPin, Store, UserRound } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { RatingSummary } from "@/components/reviews/StarRating";
 import type { Service } from "@/types";
 
 export default function ServiceCard({ service }: { service: Service }) {
@@ -25,10 +26,15 @@ export default function ServiceCard({ service }: { service: Service }) {
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 min-h-[3.5rem] text-lg font-semibold leading-7">{service.title}</h3>
 
-        <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-          <li className="flex items-center gap-2"><ModeIcon className="h-4 w-4 shrink-0 text-teal-600" />{service.serviceMode}</li>
-          <li className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0 text-teal-600" /><span className="truncate">{service.serviceArea}</span></li>
-          <li className="flex items-center gap-2"><UserRound className="h-4 w-4 shrink-0 text-teal-600" /><span className="truncate">{service.technicianName}</span></li>
+        {/* Fixed height, so cards stay equal whether or not a service has reviews */}
+        <div className="mt-1 flex h-6 items-center">
+          <RatingSummary average={service.ratingAverage} count={service.ratingCount} />
+        </div>
+
+        <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+          <li className="flex items-center gap-2"><ModeIcon className="h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" />{service.serviceMode}</li>
+          <li className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" /><span className="truncate">{service.serviceArea}</span></li>
+          <li className="flex items-center gap-2"><UserRound className="h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" /><span className="truncate">{service.technicianName}</span></li>
         </ul>
 
         <div className="mt-auto flex items-end justify-between gap-3 pt-5">

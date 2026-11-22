@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { BadgeCheck, CheckCircle2, ChevronRight, Clock, Home, MapPin, Store, Tag } from "lucide-react";
 import { ImageReveal } from "@/components/motion/ImageReveal";
 import { Reveal } from "@/components/motion/Reveal";
+import ReviewList from "@/components/reviews/ReviewList";
+import { RatingSummary } from "@/components/reviews/StarRating";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { getServiceById } from "@/lib/data";
 import RequestRepairButton from "../RequestRepairButton";
@@ -62,13 +64,16 @@ export default async function ServiceDetailsPage({ params }: Props) {
           <Reveal>
             <span className="eyebrow">{service.category}</span>
             <h1 className="section-title mt-3">{service.title}</h1>
+            <div className="mt-3">
+              <RatingSummary average={service.ratingAverage} count={service.ratingCount} />
+            </div>
           </Reveal>
 
           <Reveal>
             <dl className="grid grid-cols-2 gap-4">
               {facts.map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-center gap-3 rounded-xl border bg-card p-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-teal-600">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-teal-600 dark:text-teal-300">
                     <Icon className="h-5 w-5" />
                   </span>
                   <div className="min-w-0">
@@ -108,7 +113,7 @@ export default async function ServiceDetailsPage({ params }: Props) {
                   "Cancel anytime while the request is still pending.",
                 ].map((t) => (
                   <li key={t} className="flex gap-2.5">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" />
                     {t}
                   </li>
                 ))}
@@ -136,7 +141,7 @@ export default async function ServiceDetailsPage({ params }: Props) {
               <div className="min-w-0">
                 <p className="flex flex-wrap items-center gap-2 font-semibold">
                   {service.technician.name}
-                  <span className="inline-flex items-center gap-1 rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-teal-100 dark:bg-teal-500/15 px-2 py-0.5 text-xs font-medium text-teal-800 dark:text-teal-300">
                     <BadgeCheck className="h-3.5 w-3.5" /> Approved listing
                   </span>
                 </p>
@@ -150,6 +155,10 @@ export default async function ServiceDetailsPage({ params }: Props) {
                 </p>
               </div>
             </div>
+          </Reveal>
+
+          <Reveal>
+            <ReviewList reviews={service.reviews ?? []} average={service.ratingAverage ?? 0} count={service.ratingCount ?? 0} />
           </Reveal>
         </div>
       </div>

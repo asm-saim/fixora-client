@@ -27,6 +27,18 @@ export type Service = {
   approvalStatus: "pending" | "approved" | "rejected";
   isAvailable: boolean;
   createdAt: string;
+  /** 0 and 0 when nobody has reviewed the service yet */
+  ratingAverage?: number;
+  ratingCount?: number;
+};
+
+/** A public review: the customer name is already shortened by the server ("Sarah K."). */
+export type ServiceReview = {
+  _id: string;
+  customerName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
 };
 
 export type ServiceDetail = Service & {
@@ -36,6 +48,7 @@ export type ServiceDetail = Service & {
     area: string;
     bio: string;
   };
+  reviews?: ServiceReview[];
 };
 
 export type ServicesResponse = {
@@ -53,6 +66,18 @@ export type BookingStatus =
   | "in-progress"
   | "completed"
   | "cancelled";
+
+/** One step of a job, written by the server every time the status changes. "paid" is added after Stripe confirms. */
+export type StatusHistoryEntry = {
+  status: BookingStatus | "paid";
+  changedAt: string;
+};
+
+export type BookingReview = {
+  rating: number;
+  comment: string;
+  createdAt: string;
+};
 
 export type Booking = {
   _id: string;
@@ -73,6 +98,8 @@ export type Booking = {
   finalAmount: number;
   paymentStatus: "unpaid" | "paid";
   createdAt: string;
+  statusHistory?: StatusHistoryEntry[];
+  review?: BookingReview;
 };
 
 export type Payment = {
