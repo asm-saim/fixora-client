@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Logo from "@/components/shared/Logo";
 import RoleBadge from "@/components/shared/RoleBadge";
 import UserAvatar from "@/components/shared/UserAvatar";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useSignOut } from "@/hooks/use-sign-out";
 import { dashboardPath } from "@/lib/roles";
@@ -79,6 +80,8 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle className="text-inherit hover:bg-white/10 hover:text-primary" />
+
           {/* Auth area */}
           {isPending ? (
             <Skeleton className="h-9 w-9 rounded-full" />

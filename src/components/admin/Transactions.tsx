@@ -30,7 +30,7 @@ export default function Transactions() {
     <div className="space-y-5">
       {/* Total revenue sits above the table, and covers every payment (not just this page) */}
       <div className="flex items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm sm:max-w-sm">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-700"><Wallet className="h-6 w-6" /></span>
+        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300"><Wallet className="h-6 w-6" /></span>
         <div>
           <p className="text-sm text-muted-foreground">Total revenue</p>
           <p className="font-heading text-3xl font-bold">{formatMoney(data.totalRevenue)}</p>

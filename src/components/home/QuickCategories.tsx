@@ -19,12 +19,12 @@ export default function QuickCategories() {
               className="group relative flex h-full flex-col rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/60 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <span className="absolute right-5 top-4 font-heading text-5xl font-bold text-muted-foreground/15">{no}</span>
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-teal-600 transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-teal-600 dark:text-teal-300 transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
                 <Icon className="h-6 w-6" />
               </span>
               <h3 className="mt-5 text-lg font-semibold">{category} Repair</h3>
               <p className="mt-2 text-sm text-muted-foreground">{text}</p>
-              <span className="mt-auto flex items-center gap-1 pt-5 text-sm font-semibold text-teal-600">
+              <span className="mt-auto flex items-center gap-1 pt-5 text-sm font-semibold text-teal-600 dark:text-teal-300">
                 Browse services
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>

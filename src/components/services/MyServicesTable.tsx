@@ -114,7 +114,7 @@ export default function MyServicesTable({ technician }: { technician: { name: st
                     <Image src={s.image} alt="" width={56} height={56} className="h-14 w-14 rounded-lg object-cover" />
                     <div className="min-w-0">
                       <p className="line-clamp-1 font-medium">{s.title}</p>
-                      {s.approvalStatus === "rejected" && <p className="text-xs text-red-600">Rejected. Edit and resubmit.</p>}
+                      {s.approvalStatus === "rejected" && <p className="text-xs text-red-600 dark:text-red-300">Rejected. Edit and resubmit.</p>}
                     </div>
                   </div>
                 </TableCell>

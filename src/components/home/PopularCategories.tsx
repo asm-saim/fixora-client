@@ -24,7 +24,7 @@ export default function PopularCategories() {
                 href={`/services?category=${encodeURIComponent(category)}`}
                 className="group flex h-full flex-col items-center rounded-2xl border bg-card p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/60 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-teal-600 transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-teal-600 dark:text-teal-300 transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
                   <Icon className="h-7 w-7" />
                 </span>
                 <h3 className="mt-4 font-semibold">{category}</h3>

@@ -41,7 +41,7 @@ export default function RequestRepairButton({ service }: { service: RequestRepai
     return (
       <div className="space-y-3">
         <Button disabled className="h-12 w-full text-base">Request Repair</Button>
-        <div className="flex gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+        <div className="flex gap-2 rounded-lg border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/15 p-3 text-sm text-amber-800 dark:text-amber-300">
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <p>Only customers can request a repair. You are signed in as a {ROLE_LABEL[user.role].toLowerCase()}.</p>
         </div>

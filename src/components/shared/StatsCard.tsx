@@ -3,11 +3,11 @@ import { Counter } from "@/components/motion/Counter";
 import { cn } from "@/lib/utils";
 
 const TONE = {
-  teal: "bg-teal-100 text-teal-700",
-  blue: "bg-blue-100 text-blue-700",
-  indigo: "bg-indigo-100 text-indigo-700",
-  amber: "bg-amber-100 text-amber-700",
-  green: "bg-green-100 text-green-700",
+  teal: "bg-teal-100 dark:bg-teal-500/15 text-teal-700 dark:text-teal-300",
+  blue: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300",
+  indigo: "bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300",
+  amber: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  green: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300",
 } as const;
 
 type Props = {

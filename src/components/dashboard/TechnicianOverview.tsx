@@ -21,7 +21,7 @@ export default function TechnicianOverview() {
       {stats.pendingRequests > 0 && (
         <Link
           href="/dashboard/technician/requests"
-          className="flex items-center justify-between gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-900 transition-colors hover:bg-blue-100"
+          className="flex items-center justify-between gap-4 rounded-2xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/15 p-4 text-blue-900 dark:text-blue-300 transition-colors hover:bg-blue-100 dark:hover:bg-blue-500/25"
         >
           <span className="flex items-center gap-3">
             <Inbox className="h-5 w-5 shrink-0" />

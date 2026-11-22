@@ -12,7 +12,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
   return (
     <div className="container-page flex min-h-[70vh] flex-col items-center justify-center text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-600">
+      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300">
         <AlertTriangle className="h-8 w-8" />
       </span>
       <h1 className="mt-6 text-2xl font-bold md:text-3xl">Something went wrong</h1>

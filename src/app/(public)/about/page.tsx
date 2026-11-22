@@ -94,13 +94,13 @@ export default function AboutPage() {
           {ROLES.map(({ icon: Icon, title, points }) => (
             <StaggerItem key={title} className="h-full">
               <div className="flex h-full flex-col rounded-2xl border bg-card p-6 shadow-sm">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-teal-600">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-teal-600 dark:text-teal-300">
                   <Icon className="h-6 w-6" />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold">{title}</h3>
                 <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
                   {points.map((p) => (
-                    <li key={p} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />{p}</li>
+                    <li key={p} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" />{p}</li>
                   ))}
                 </ul>
               </div>

@@ -135,7 +135,7 @@ export default function SignInForm() {
         New to Fixora?{" "}
         <Link
           href="/sign-up"
-          className="font-semibold text-teal-600 hover:underline"
+          className="font-semibold text-teal-600 dark:text-teal-300 hover:underline"
         >
           Create an account
         </Link>

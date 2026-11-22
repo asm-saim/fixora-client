@@ -65,7 +65,7 @@ export default function PaymentHistory() {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm sm:max-w-sm">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-700">
+        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300">
           <Wallet className="h-6 w-6" />
         </span>
         <div>

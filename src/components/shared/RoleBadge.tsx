@@ -4,9 +4,9 @@ import { ROLE_LABEL } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 const STYLE: Record<Role, string> = {
-  customer: "bg-teal-100 text-teal-800 border-teal-200",
-  technician: "bg-indigo-100 text-indigo-700 border-indigo-200",
-  admin: "bg-amber-100 text-amber-800 border-amber-200",
+  customer: "bg-teal-100 dark:bg-teal-500/15 text-teal-800 dark:text-teal-300 border-teal-200 dark:border-teal-500/30",
+  technician: "bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500/30",
+  admin: "bg-amber-100 dark:bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30",
 };
 
 export default function RoleBadge({ role, className }: { role: Role; className?: string }) {

@@ -21,7 +21,7 @@ export default function CustomerOverview() {
       {stats.awaitingPayment > 0 && (
         <Link
           href="/dashboard/customer/bookings"
-          className="flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900 transition-colors hover:bg-amber-100"
+          className="flex items-center justify-between gap-4 rounded-2xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/15 p-4 text-amber-900 dark:text-amber-300 transition-colors hover:bg-amber-100 dark:hover:bg-amber-500/25"
         >
           <span className="flex items-center gap-3">
             <CreditCard className="h-5 w-5 shrink-0" />

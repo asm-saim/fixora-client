@@ -25,7 +25,7 @@ export default function WhyChooseUs() {
             {POINTS.map(({ icon: Icon, title, text }) => (
               <StaggerItem key={title}>
                 <div className="flex gap-4">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-teal-600">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-teal-600 dark:text-teal-300">
                     <Icon className="h-6 w-6" />
                   </span>
                   <div>

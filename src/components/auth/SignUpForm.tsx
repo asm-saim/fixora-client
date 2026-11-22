@@ -100,7 +100,7 @@ export default function SignUpForm() {
                 />
 
                 <div className="h-full rounded-xl border-2 bg-card p-4 transition peer-checked:border-primary peer-checked:bg-primary/10 peer-focus-visible:ring-2 peer-focus-visible:ring-ring">
-                  <Icon className="h-5 w-5 text-teal-600" />
+                  <Icon className="h-5 w-5 text-teal-600 dark:text-teal-300" />
 
                   <p className="mt-2 text-sm font-semibold">{title}</p>
 
@@ -189,7 +189,7 @@ export default function SignUpForm() {
         Already have an account?{" "}
         <Link
           href="/sign-in"
-          className="font-semibold text-teal-600 hover:underline"
+          className="font-semibold text-teal-600 dark:text-teal-300 hover:underline"
         >
           Sign In
         </Link>

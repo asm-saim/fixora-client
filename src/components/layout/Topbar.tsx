@@ -5,6 +5,7 @@ import { Home, Menu, PanelLeft } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import RoleBadge from "@/components/shared/RoleBadge";
 import UserAvatar from "@/components/shared/UserAvatar";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import type { AppUser } from "@/types";
 
 type Props = { user: AppUser | null; onOpenMobile: () => void; onToggleCollapse: () => void };
@@ -24,20 +25,23 @@ export default function Topbar({ user, onOpenMobile, onToggleCollapse }: Props) 
         </Link>
       </div>
 
-      {user && (
-        <div className="flex items-center gap-3">
-          <div className="hidden text-right sm:block">
-            <p className="text-sm font-semibold leading-tight">{user.name}</p>
-            <RoleBadge role={user.role} className="mt-0.5 h-5 px-2 text-[11px]" />
+      <div className="flex items-center gap-2 sm:gap-3">
+        <ThemeToggle />
+        {user && (
+          <div className="flex items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold leading-tight">{user.name}</p>
+              <RoleBadge role={user.role} className="mt-0.5 h-5 px-2 text-[11px]" />
+            </div>
+            <UserAvatar
+              src={user.image}
+              name={user.name}
+              className="h-9 w-9 border"
+              fallbackClassName="bg-secondary text-xs font-semibold text-white"
+            />
           </div>
-          <UserAvatar
-            src={user.image}
-            name={user.name}
-            className="h-9 w-9 border"
-            fallbackClassName="bg-secondary text-xs font-semibold text-white"
-          />
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 }

@@ -13,7 +13,7 @@ type Props = {
 export default function EmptyState({ title, description, icon: Icon = PackageSearch, action }: Props) {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-teal-600">
+      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-teal-600 dark:text-teal-300">
         <Icon className="h-8 w-8" />
       </span>
       <h3 className="mt-5 text-lg font-semibold">{title}</h3>

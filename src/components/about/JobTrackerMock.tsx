@@ -36,7 +36,7 @@ export default function JobTrackerMock() {
                 className={cn(
                   "relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-xs",
                   step.state === "done" && "border-primary bg-primary text-primary-foreground",
-                  step.state === "current" && "border-amber-500 bg-amber-100 text-amber-700",
+                  step.state === "current" && "border-amber-500 bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
                   step.state === "todo" && "border-border bg-card text-muted-foreground"
                 )}
               >
