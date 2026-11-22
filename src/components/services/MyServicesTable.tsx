@@ -34,7 +34,11 @@ export default function MyServicesTable({ technician }: { technician: { name: st
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let active = true;
+    queueMicrotask(() => { if (active) void load(); });
+    return () => { active = false; };
+  }, [load]);
 
   async function toggle(service: Service, next: boolean) {
     setTogglingId(service._id);

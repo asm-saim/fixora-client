@@ -39,7 +39,9 @@ export default function ServiceApproval() {
   const { data, error, loading, reload } = useAuthedApi<Response>(`/api/admin/services?${params}`);
 
   useEffect(() => {
-    if (data && data.page > data.totalPages) setPage(data.totalPages);
+    if (data && data.page > data.totalPages) {
+      queueMicrotask(() => setPage(data.totalPages));
+    }
   }, [data]);
 
   async function decide(service: Service, approvalStatus: Decision) {

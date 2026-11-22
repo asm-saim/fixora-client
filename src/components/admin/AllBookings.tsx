@@ -30,7 +30,9 @@ export default function AllBookings() {
   const { data, error, loading, reload } = useAuthedApi<Response>(`/api/admin/bookings?${params}`);
 
   useEffect(() => {
-    if (data && data.page > data.totalPages) setPage(data.totalPages);
+    if (data && data.page > data.totalPages) {
+      queueMicrotask(() => setPage(data.totalPages));
+    }
   }, [data]);
 
   return (

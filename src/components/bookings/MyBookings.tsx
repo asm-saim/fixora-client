@@ -40,7 +40,9 @@ export default function MyBookings() {
   }, []);
 
   useEffect(() => {
-    load();
+    let active = true;
+    queueMicrotask(() => { if (active) void load(); });
+    return () => { active = false; };
   }, [load]);
 
   async function confirmCancel() {

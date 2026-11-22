@@ -51,7 +51,9 @@ export default function UsersTable({ currentUserId }: { currentUserId: string })
 
   // the last user on the last page was removed by a filter: go back to a page that exists
   useEffect(() => {
-    if (data && data.page > data.totalPages) setPage(data.totalPages);
+    if (data && data.page > data.totalPages) {
+      queueMicrotask(() => setPage(data.totalPages));
+    }
   }, [data]);
 
   async function confirmChange() {

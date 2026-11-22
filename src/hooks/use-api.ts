@@ -31,7 +31,9 @@ export function useAuthedApi<T>(path: string) {
   }, [path]);
 
   useEffect(() => {
-    load();
+    let active = true;
+    queueMicrotask(() => { if (active) void load(); });
+    return () => { active = false; };
   }, [load]);
 
   return { data, error, loading, reload: load, setData };

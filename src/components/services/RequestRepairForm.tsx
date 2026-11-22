@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -27,13 +27,14 @@ export default function RequestRepairForm({ service, user, onDone }: Props) {
   const router = useRouter();
 
   const {
-    register, handleSubmit, watch, formState: { errors, isSubmitting },
+    register, handleSubmit, control, formState: { errors, isSubmitting },
   } = useForm<RequestValues>({
     resolver: zodResolver(requestSchema),
     defaultValues: { customerPhone: user.phone ?? "", address: "", preferredDate: "", problemDescription: "" },
   });
 
-  const descriptionLength = (watch("problemDescription") ?? "").length;
+  const description = useWatch({ control, name: "problemDescription" });
+  const descriptionLength = (description ?? "").length;
 
   async function onSubmit(values: RequestValues) {
     try {

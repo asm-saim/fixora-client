@@ -44,7 +44,9 @@ export default function PaymentHistory() {
   }, []);
 
   useEffect(() => {
-    load();
+    let active = true;
+    queueMicrotask(() => { if (active) void load(); });
+    return () => { active = false; };
   }, [load]);
 
   const total = useMemo(() => (payments ?? []).reduce((sum, p) => sum + p.amount, 0), [payments]);

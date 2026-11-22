@@ -25,7 +25,7 @@ export async function getServices(filters: Partial<ServiceFilterValues>, limit =
   const qs = new URLSearchParams(buildQuery(filters));
   qs.set("limit", String(limit));
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/services?${qs}`, { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/services?${qs}`, { next: { revalidate: 30 } });
   if (!res.ok) throw new Error("Could not load services");
   return res.json();
 }
