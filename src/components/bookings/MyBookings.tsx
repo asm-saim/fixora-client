@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, MapPinned, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +10,9 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import EmptyState from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeletons";
 import PayNowButton from "@/components/bookings/PayNowButton";
+import BookingTrackerDialog from "@/components/bookings/BookingTrackerDialog";
+import ReviewDialog from "@/components/reviews/ReviewDialog";
+import StarRating from "@/components/reviews/StarRating";
 import { PaymentBadge, StatusBadge } from "@/components/shared/StatusBadge";
 import { api } from "@/lib/api";
 import { formatDate, formatMoney } from "@/lib/format";
@@ -22,6 +25,8 @@ const amountOf = (b: Booking) =>
 export default function MyBookings() {
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [cancelling, setCancelling] = useState<Booking | null>(null);
+  const [tracking, setTracking] = useState<Booking | null>(null);
+  const [reviewing, setReviewing] = useState<Booking | null>(null);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
@@ -43,7 +48,7 @@ export default function MyBookings() {
     setBusy(true);
     try {
       const updated = await api<Booking>(`/api/bookings/${cancelling._id}/cancel`, { method: "PATCH", auth: true });
-      setBookings((list) => list?.map((b) => (b._id === updated._id ? updated : b)) ?? null);
+      replace(updated);
       toast.success("Request cancelled");
       setCancelling(null);
     } catch (e) {
@@ -68,26 +73,40 @@ export default function MyBookings() {
     );
   }
 
-  // Cancel only while the request is still "requested"
-  const actions = (b: Booking) => {
-    if (b.status === "requested") {
-      return (
+  const replace = (updated: Booking) => setBookings((list) => list?.map((b) => (b._id === updated._id ? updated : b)) ?? null);
+
+  // Track is always available. The main action depends on the status.
+  const actions = (b: Booking) => (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <Button size="sm" variant="ghost" onClick={() => setTracking(b)} aria-label={`Track ${b.serviceTitle}`}>
+        <MapPinned className="mr-1 h-3.5 w-3.5" /> Track
+      </Button>
+      {b.status === "requested" && (
+        // Cancel only while the request is still "requested"
         <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => setCancelling(b)}>
           Cancel request
         </Button>
-      );
-    }
-    if (b.status === "completed") {
-      // Pay Now only while unpaid. A paid job shows the Paid badge instead of the button.
-      return b.paymentStatus === "unpaid" ? <PayNowButton booking={b} /> : <PaymentBadge status="paid" />;
-    }
-    return <span className="text-sm text-muted-foreground">-</span>;
-  };
+      )}
+      {b.status === "completed" && (
+        <>
+          {b.review ? (
+            <StarRating value={b.review.rating} className="h-3.5 w-3.5" label={`You rated this ${b.review.rating} out of 5`} />
+          ) : (
+            <Button size="sm" variant="outline" onClick={() => setReviewing(b)}>
+              <Star className="mr-1 h-3.5 w-3.5" /> Rate
+            </Button>
+          )}
+          {/* Pay Now only while unpaid. A paid job shows the Paid badge instead of the button. */}
+          {b.paymentStatus === "unpaid" ? <PayNowButton booking={b} /> : <PaymentBadge status="paid" />}
+        </>
+      )}
+    </div>
+  );
 
   return (
     <>
       {/* Desktop table */}
-      <div className="hidden overflow-hidden rounded-2xl border bg-card md:block">
+      <div className="hidden overflow-x-auto rounded-2xl border bg-card md:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -122,7 +141,7 @@ export default function MyBookings() {
                   </TableCell>
                   <TableCell><StatusBadge status={b.status} /></TableCell>
                   <TableCell><PaymentBadge status={b.paymentStatus} /></TableCell>
-                  <TableCell className="text-right"><div className="flex justify-end">{actions(b)}</div></TableCell>
+                  <TableCell className="text-right">{actions(b)}</TableCell>
                 </TableRow>
               );
             })}
@@ -157,11 +176,14 @@ export default function MyBookings() {
                   <dd className="font-medium">{formatMoney(amount.value)}</dd>
                 </div>
               </dl>
-              <div className="flex justify-end">{actions(b)}</div>
+              {actions(b)}
             </div>
           );
         })}
       </div>
+
+      <BookingTrackerDialog booking={tracking} onClose={() => setTracking(null)} audience="customer" />
+      <ReviewDialog booking={reviewing} onClose={() => setReviewing(null)} onReviewed={replace} />
 
       <ConfirmModal
         open={!!cancelling}

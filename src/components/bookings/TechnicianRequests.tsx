@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Inbox, Loader2 } from "lucide-react";
+import { Inbox, Loader2, MapPinned } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import BookingTrackerDialog from "@/components/bookings/BookingTrackerDialog";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import EmptyState from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeletons";
@@ -44,6 +45,7 @@ export default function TechnicianRequests() {
   const [rejecting, setRejecting] = useState<Booking | null>(null);
   const [completing, setCompleting] = useState<Booking | null>(null);
   const [amount, setAmount] = useState("");
+  const [tracking, setTracking] = useState<Booking | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -80,6 +82,7 @@ export default function TechnicianRequests() {
         body: { status, ...extra },
       });
       setBookings((list) => list?.map((b) => (b._id === updated._id ? updated : b)) ?? null);
+      setTracking((t) => (t && t._id === updated._id ? updated : t));
       toast.success(SUCCESS_MESSAGE[status]);
       return true;
     } catch (e) {
@@ -112,7 +115,7 @@ export default function TechnicianRequests() {
   }
 
   // Only the buttons that are valid for the current status
-  const actions = (b: Booking) => {
+  const primaryAction = (b: Booking) => {
     const busy = busyId === b._id;
     switch (b.status) {
       case "requested":
@@ -150,6 +153,15 @@ export default function TechnicianRequests() {
         return <span className="text-sm text-muted-foreground">-</span>;
     }
   };
+
+  const actions = (b: Booking) => (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <Button size="sm" variant="ghost" onClick={() => setTracking(b)} aria-label={`Track ${b.serviceTitle}`}>
+        <MapPinned className="mr-1 h-3.5 w-3.5" /> Track
+      </Button>
+      {primaryAction(b)}
+    </div>
+  );
 
   if (!bookings) return <TableSkeleton />;
 
@@ -232,7 +244,7 @@ export default function TechnicianRequests() {
                       </p>
                     </TableCell>
                     <TableCell><StatusBadge status={b.status} /></TableCell>
-                    <TableCell className="text-right"><div className="flex justify-end">{actions(b)}</div></TableCell>
+                    <TableCell className="text-right">{actions(b)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -268,7 +280,7 @@ export default function TechnicianRequests() {
                     <dd className="text-muted-foreground">{b.problemDescription}</dd>
                   </div>
                 </dl>
-                <div className="mt-auto flex justify-end">{actions(b)}</div>
+                <div className="mt-auto">{actions(b)}</div>
               </div>
             ))}
           </div>
@@ -322,6 +334,9 @@ export default function TechnicianRequests() {
         loading={!!rejecting && busyId === rejecting._id}
         onConfirm={confirmReject}
       />
+
+      {/* Job tracker */}
+      <BookingTrackerDialog booking={tracking} onClose={() => setTracking(null)} audience="technician" />
     </div>
   );
 }
