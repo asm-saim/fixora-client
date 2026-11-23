@@ -30,8 +30,7 @@ const LINKS = [
 const SCROLL_THRESHOLD = 24;
 
 export default function Navbar() {
-  const rawPathname = usePathname();
-  const pathname = rawPathname || "/"; // Vercel prerender can give "" for the root route
+  const pathname = usePathname();
   const { user, isPending } = useCurrentUser();
   const signOut = useSignOut();
   const [open, setOpen] = useState(false);
