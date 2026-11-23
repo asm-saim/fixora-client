@@ -2,14 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { LayoutDashboard, LogOut, Menu, UserCog } from "lucide-react";
 import { m } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLinkItem, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLinkItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import Logo from "@/components/shared/Logo";
 import RoleBadge from "@/components/shared/RoleBadge";
@@ -36,21 +47,23 @@ export default function Navbar() {
   const signOut = useSignOut();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const initialLoadHandled = useRef(false);
 
-  useEffect(() => {
-    // On a fresh load the browser can restore a small scroll offset before
-    // hydration. Put the homepage back at the top so the navbar starts transparent.
-    if (!initialLoadHandled.current) {
-      initialLoadHandled.current = true;
-      if (pathname === "/") window.scrollTo(0, 0);
-      setScrolled(false);
-    }
-  }, [pathname]);
+  const isHome = pathname === "/";
+
+  // Home only: stop the browser restoring an old scroll offset on reload, so the
+  // page always opens at the top with a transparent navbar.
+  useLayoutEffect(() => {
+    if (!isHome) return;
+    const previous = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    return () => {
+      window.history.scrollRestoration = previous;
+    };
+  }, [isHome]);
 
   useEffect(() => {
     let frame = 0;
-
     const update = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
 
     // Coalesce rapid scroll events into one state update per frame.
@@ -62,13 +75,14 @@ export default function Navbar() {
       });
     };
 
+    // bfcache restores happen after hydration, so re-apply the reset.
     const onPageShow = () => {
-      // bfcache restores happen after hydration, so re-apply the homepage reset.
-      if (pathname === "/") window.scrollTo(0, 0);
+      if (isHome) window.scrollTo(0, 0);
       update();
     };
 
-    update();
+    // Read the initial position on the next frame instead of during the effect body.
+    scheduleUpdate();
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate, { passive: true });
     window.addEventListener("pageshow", onPageShow);
@@ -79,10 +93,10 @@ export default function Navbar() {
       window.removeEventListener("resize", scheduleUpdate);
       window.removeEventListener("pageshow", onPageShow);
     };
-  }, [pathname]);
+  }, [isHome]);
 
-  const isHome = pathname === "/";
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <m.header
@@ -94,7 +108,7 @@ export default function Navbar() {
         isHome ? "fixed inset-x-0" : "sticky",
         isHome && !scrolled
           ? "border-transparent bg-transparent text-white shadow-none"
-          : "border-white/10 bg-[#0B1F3A]/80 text-white shadow-lg backdrop-blur-xl"
+          : "border-white/10 bg-[#0B1F3A]/80 text-white shadow-lg backdrop-blur-xl",
       )}
     >
       <div className="container-page flex h-16 items-center justify-between">
@@ -111,7 +125,7 @@ export default function Navbar() {
                 "rounded-md px-4 py-2 text-sm font-medium transition-colors",
                 isActive(l.href)
                   ? "font-semibold text-primary"
-                  : "text-white/75 hover:text-primary/80"
+                  : "text-white/75 hover:text-primary/80",
               )}
             >
               {l.label}
@@ -141,18 +155,29 @@ export default function Navbar() {
               <DropdownMenuContent align="end" className="w-64">
                 <div className="space-y-1.5 px-2 py-2.5">
                   <p className="truncate text-sm font-semibold">{user.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </p>
                   <RoleBadge role={user.role} />
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuLinkItem closeOnClick render={<Link href={dashboardPath(user.role)} />}>
+                <DropdownMenuLinkItem
+                  closeOnClick
+                  render={<Link href={dashboardPath(user.role)} />}
+                >
                   <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
                 </DropdownMenuLinkItem>
-                <DropdownMenuLinkItem closeOnClick render={<Link href="/dashboard/profile" />}>
+                <DropdownMenuLinkItem
+                  closeOnClick
+                  render={<Link href="/dashboard/profile" />}
+                >
                   <UserCog className="mr-2 h-4 w-4" /> Update Profile
                 </DropdownMenuLinkItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={signOut}
+                  className="text-destructive focus:text-destructive"
+                >
                   <LogOut className="mr-2 h-4 w-4" /> Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -163,12 +188,15 @@ export default function Navbar() {
                 href="/sign-in"
                 className={buttonVariants({
                   variant: "outline",
-                  className: "bg-transparent text-white hover:border-primary hover:bg-transparent hover:text-primary",
+                  className:
+                    "bg-transparent text-white hover:border-primary hover:bg-transparent hover:text-primary",
                 })}
               >
                 Sign In
               </Link>
-              <Link href="/sign-up" className={buttonVariants()}>Sign Up</Link>
+              <Link href="/sign-up" className={buttonVariants()}>
+                Sign Up
+              </Link>
             </div>
           )}
 
@@ -178,15 +206,23 @@ export default function Navbar() {
               className={buttonVariants({
                 variant: "ghost",
                 size: "icon",
-                className: "md:hidden text-inherit hover:bg-white/10 hover:text-primary",
+                className:
+                  "md:hidden text-inherit hover:bg-white/10 hover:text-primary",
               })}
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
-              <SheetHeader><SheetTitle><Logo /></SheetTitle></SheetHeader>
-              <nav className="mt-6 flex flex-col gap-1 px-4" aria-label="Mobile">
+              <SheetHeader>
+                <SheetTitle>
+                  <Logo />
+                </SheetTitle>
+              </SheetHeader>
+              <nav
+                className="mt-6 flex flex-col gap-1 px-4"
+                aria-label="Mobile"
+              >
                 {LINKS.map((l) => (
                   <Link
                     key={l.href}
@@ -194,7 +230,9 @@ export default function Navbar() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       "rounded-lg px-4 py-3 text-sm font-medium",
-                      isActive(l.href) ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted"
+                      isActive(l.href)
+                        ? "bg-primary/15 text-primary"
+                        : "text-muted-foreground hover:bg-muted",
                     )}
                   >
                     {l.label}
@@ -207,7 +245,8 @@ export default function Navbar() {
                       onClick={() => setOpen(false)}
                       className={buttonVariants({
                         variant: "outline",
-                        className: "bg-transparent hover:border-primary hover:bg-transparent hover:text-primary",
+                        className:
+                          "bg-transparent hover:border-primary hover:bg-transparent hover:text-primary",
                       })}
                     >
                       Sign In
