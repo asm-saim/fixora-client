@@ -42,9 +42,10 @@ const LINKS = [
 const SCROLL_THRESHOLD = 64;
 
 export default function Navbar() {
-  // Vercel's prerender can return "" for the root route. Normalizing it keeps the
-  // first client render in sync with the server HTML (fixed + transparent navbar).
-  const pathname = usePathname() || "/";
+  // The prerender can report the root route as "" or "/index" (Next names the root
+  // page segment "index"). Normalizing it keeps the server HTML and the first client
+  // render in sync, so the navbar starts fixed + transparent with Home active.
+  const pathname = (usePathname() || "/").replace(/^\/index\/?$/, "/");
   const { user, isPending } = useCurrentUser();
   const signOut = useSignOut();
   const [open, setOpen] = useState(false);
