@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LayoutDashboard, LogOut, Menu, UserCog } from "lucide-react";
 import { m } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
@@ -27,7 +27,8 @@ const LINKS = [
   { href: "/about", label: "About" },
 ];
 
-const SCROLL_THRESHOLD = 24;
+/** A small browser-restored offset should still count as "at the top". */
+const SCROLL_THRESHOLD = 64;
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -35,17 +36,48 @@ export default function Navbar() {
   const signOut = useSignOut();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const initialLoadHandled = useRef(false);
 
   useEffect(() => {
-    // Read after the browser has settled the initial/restored position for this route.
-    const frame = requestAnimationFrame(() => setScrolled(window.scrollY > SCROLL_THRESHOLD));
+    // On a fresh load the browser can restore a small scroll offset before
+    // hydration. Put the homepage back at the top so the navbar starts transparent.
+    if (!initialLoadHandled.current) {
+      initialLoadHandled.current = true;
+      if (pathname === "/") window.scrollTo(0, 0);
+      setScrolled(false);
+    }
+  }, [pathname]);
 
-    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
-    window.addEventListener("scroll", onScroll, { passive: true });
+  useEffect(() => {
+    let frame = 0;
+
+    const update = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+
+    // Coalesce rapid scroll events into one state update per frame.
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        update();
+      });
+    };
+
+    const onPageShow = () => {
+      // bfcache restores happen after hydration, so re-apply the homepage reset.
+      if (pathname === "/") window.scrollTo(0, 0);
+      update();
+    };
+
+    update();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+    window.addEventListener("pageshow", onPageShow);
 
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("pageshow", onPageShow);
     };
   }, [pathname]);
 
