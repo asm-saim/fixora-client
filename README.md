@@ -30,7 +30,7 @@
 
 ---
 
-## Examiner Test Credentials
+## Test Credentials
 
 | Role | Email | Password |
 |---|---|---|
