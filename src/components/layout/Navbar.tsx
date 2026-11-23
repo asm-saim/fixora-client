@@ -27,6 +27,8 @@ const LINKS = [
   { href: "/about", label: "About" },
 ];
 
+const SCROLL_THRESHOLD = 24;
+
 export default function Navbar() {
   const pathname = usePathname();
   const { user, isPending } = useCurrentUser();
@@ -35,11 +37,17 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    // Read after the browser has settled the initial/restored position for this route.
+    const frame = requestAnimationFrame(() => setScrolled(window.scrollY > SCROLL_THRESHOLD));
+
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [pathname]);
 
   const isHome = pathname === "/";
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));

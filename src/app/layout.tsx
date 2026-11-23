@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Sora, Inter } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import MotionProvider from "@/components/motion/MotionProvider";
@@ -30,6 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sora.variable} ${inter.variable}`}>
+        {/* Fresh homepage loads start at the top so the transparent navbar is shown first. */}
+        <Script id="home-scroll-restoration" strategy="beforeInteractive">
+          {`if (location.pathname === '/' && !location.hash) history.scrollRestoration = 'manual';`}
+        </Script>
         <ThemeProvider>
           <MotionProvider>{children}</MotionProvider>
           <Toaster richColors position="top-right" />
