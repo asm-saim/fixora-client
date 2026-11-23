@@ -42,7 +42,9 @@ const LINKS = [
 const SCROLL_THRESHOLD = 64;
 
 export default function Navbar() {
-  const pathname = usePathname();
+  // Vercel's prerender can return "" for the root route. Normalizing it keeps the
+  // first client render in sync with the server HTML (fixed + transparent navbar).
+  const pathname = usePathname() || "/";
   const { user, isPending } = useCurrentUser();
   const signOut = useSignOut();
   const [open, setOpen] = useState(false);
